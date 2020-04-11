@@ -18,7 +18,7 @@ class MyApp extends StatelessWidget {
       ),
       home: RepositoryProvider<TipRepository>(
         create: (context) =>
-        TipRepositoryMemory()
+        TipRepositoryFirestore()
           ..refresh(),
         child: BlocProvider(
             create: (context) => TipBloc(RepositoryProvider.of(context)),

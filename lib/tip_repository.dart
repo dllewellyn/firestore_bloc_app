@@ -1,5 +1,7 @@
 import 'dart:async';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 import 'model.dart';
 
 abstract class TipRepository {
@@ -8,6 +10,41 @@ abstract class TipRepository {
   void dispose();
 
   void refresh();
+}
+
+class TipRepositoryFirestore extends TipRepository {
+
+  final _loadedData = StreamController<List<Tip>>();
+
+  final _cache = List<Tip>();
+
+  @override
+  void dispose() {
+    _loadedData.close();
+  }
+
+  @override
+  void refresh() {
+    if (Firestore.instance != null) {
+      Firestore.instance
+          .collection('tips')
+          .snapshots()
+          .listen((techniques) {
+        _cache.clear();
+        techniques.documents.forEach((tip) {
+          final doc = tip.data;
+          _cache.add(
+              Tip(doc["tipName"], doc["shortTipText"], doc["fullTipText"]));
+        });
+
+        _loadedData.add(_cache);
+      });
+    }
+  }
+
+  @override
+  Stream<List<Tip>> tips() => _loadedData.stream;
+
 }
 
 class TipRepositoryMemory extends TipRepository {

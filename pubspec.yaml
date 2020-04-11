@@ -23,6 +23,8 @@ dependencies:
   bloc: ^3.0.0
   flutter_bloc: ^3.2.0
   cupertino_icons: ^0.1.2
+  firebase_core: ^0.4.4+3
+  cloud_firestore: ^0.13.4+2
 
 dev_dependencies:
   flutter_test:
